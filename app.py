@@ -33,5 +33,4 @@ async def check_integrity_transactions():
     """Check integrity blocks of blockchain"""
 
     total_check = check_integrity()
-    print(total_check)
     return {"blocks": total_check}
