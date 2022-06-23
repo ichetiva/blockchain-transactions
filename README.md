@@ -1,7 +1,7 @@
 # Simple API with Blockchain powered by Python 3 and FastAPI
 
 ### Starting:
-1. Install depends:
+1. Install dependencies:
 ```shell
 pip install -r requirements.txt
 ```
