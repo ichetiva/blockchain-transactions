@@ -1,6 +1,7 @@
 import hashlib
 import os
 import json
+from typing import Optional
 
 BLOCKCHAIN_DIR = os.curdir + "/blocks/"
 
@@ -13,7 +14,7 @@ def write_block(
     from_: int,
     to: int,
     amount: int,
-    comment: str,
+    comment: Optional[str] = None,
 ):
     files = _get_files()  # unsorted
     sorted_files = _sort_files(files)
@@ -33,18 +34,37 @@ def check_integrity():
     files = _get_files()  # unsorted
     sorted_files = _sort_files(files)
 
+    total = []
     for filename in sorted_files[1::]:
-        with open(BLOCKCHAIN_DIR + str(filename), "r") as file:
-            contents = json.loads(file.read())
+        contents = _get_block(str(filename))
         hash_ = contents["prev_hash"]
         actual_hash = _hash_block(str(filename - 1))
         if hash_ == actual_hash:
-            print(f"Block {filename - 1} is OK")
+            total.append(
+                {
+                    "block": filename - 1,
+                    "status": "OK"
+                }
+            )
         else:
-            print(f"Block {filename - 1} is Corrupted")
+            total.append(
+                {
+                    "block": filename - 1,
+                    "status": "Corrupted"
+                }
+            )
+    return total
+
+
+def _get_block(filename: str) -> dict:
+    with open(BLOCKCHAIN_DIR + filename, "r") as file:
+        contents = json.loads(file.read())
+    return contents
 
 
 def _save_block(filename: str, data: dict):
+    """Save block to file"""
+    
     with open(BLOCKCHAIN_DIR + filename, "w") as file:
         file.write(
             json.dumps(data, indent=4, ensure_ascii=False)
@@ -52,6 +72,8 @@ def _save_block(filename: str, data: dict):
 
 
 def _hash_block(filename: str) -> str:
+    """Hashing block to MD5"""
+
     with open(BLOCKCHAIN_DIR + filename, "rb") as file:
         hashed_block = hashlib.md5(file.read()).hexdigest()
     return hashed_block
