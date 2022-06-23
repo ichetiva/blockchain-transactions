@@ -1,5 +1,9 @@
 # Simple API with Blockchain powered by Python 3 and FastAPI
 
+### Configuration:
+1. Rename file `.env.simple` to `.env`
+2. Set your URI to your MongoDB
+
 ### Starting:
 1. Install dependencies:
 ```shell
